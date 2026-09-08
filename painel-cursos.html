@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel de Cursos — Bootstrap</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+<style>
+  body { background: #f4f6f9; padding-top: 62px; }
+  .navbar-brand { font-weight: 700; }
+  .card-curso { border: none; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,.07); height: 100%; }
+  .badge-destaque { position: absolute; top: 10px; right: 10px; }
+  section { scroll-margin-top: 75px; padding: 50px 0; }
+  #toastContainer { z-index: 1080; }
+  .range-valor { font-weight: 600; }
+</style>
+</head>
+<body data-bs-spy="scroll" data-bs-target="#navLinksDesktop" data-bs-offset="80" tabindex="0">
+
+<!-- Navbar fixa -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="#inicio"><i class="bi bi-mortarboard-fill"></i> Painel de Cursos</a>
+
+    <!-- Hamburguer só em telas pequenas, abre o Offcanvas -->
+    <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Links visíveis em telas grandes -->
+    <div class="d-none d-lg-flex ms-auto">
+      <ul class="navbar-nav" id="navLinksDesktop">
+        <li class="nav-item"><a class="nav-link" href="#inicio">Início</a></li>
+        <li class="nav-item"><a class="nav-link" href="#cursos">Cursos</a></li>
+        <li class="nav-item"><a class="nav-link" href="#sobre">Sobre</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contato">Contato</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Offcanvas (menu lateral para telas pequenas) -->
+<div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="offcanvasMenu">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">Menu</h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    <ul class="navbar-nav">
+      <li class="nav-item"><a class="nav-link text-white" href="#inicio" data-bs-dismiss="offcanvas">Início</a></li>
+      <li class="nav-item"><a class="nav-link text-white" href="#cursos" data-bs-dismiss="offcanvas">Cursos</a></li>
+      <li class="nav-item"><a class="nav-link text-white" href="#sobre" data-bs-dismiss="offcanvas">Sobre</a></li>
+      <li class="nav-item"><a class="nav-link text-white" href="#contato" data-bs-dismiss="offcanvas">Contato</a></li>
+    </ul>
+  </div>
+</div>
+
+<!-- Início -->
+<section id="inicio" class="container">
+  <div class="p-4 p-md-5 bg-white rounded-4 shadow-sm">
+    <h1 class="mb-2">Painel de Controle de Cursos</h1>
+    <p class="text-muted mb-0">Gerencie os cursos cadastrados, acompanhe o progresso e filtre por categoria.</p>
+  </div>
+</section>
+
+<!-- Cursos -->
+<section id="cursos" class="container">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+    <h2 class="mb-0">Cursos Cadastrados</h2>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCurso">
+      <i class="bi bi-plus-circle"></i> Adicionar Curso
+    </button>
+  </div>
+
+  <!-- Alerta de ações -->
+  <div id="areaAlerta" class="mb-3"></div>
+
+  <!-- Barra de progresso: meta de cursos cadastrados -->
+  <div class="mb-4">
+    <div class="d-flex justify-content-between">
+      <small class="text-muted">Meta de cadastro (10 cursos)</small>
+      <small class="text-muted"><span id="progressoTexto"></span></small>
+    </div>
+    <div class="progress" role="progressbar" style="height: 10px;">
+      <div id="barraProgresso" class="progress-bar bg-success" style="width: 0%;"></div>
+    </div>
+  </div>
+
+  <!-- Filtro por categoria -->
+  <div class="dropdown mb-4">
+    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+      Categoria: <span id="categoriaAtualLabel">Todas</span>
+    </button>
+    <ul class="dropdown-menu" id="listaCategorias">
+      <li><a class="dropdown-item" href="#" data-categoria="Todas">Todas</a></li>
+    </ul>
+  </div>
+
+  <!-- Spinner de carregamento -->
+  <div id="spinnerCarregando" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Carregando...</span>
+    </div>
+    <p class="text-muted mt-2">Carregando cursos...</p>
+  </div>
+
+  <!-- Cards de cursos -->
+  <div id="listaCursos" class="row g-4 d-none"></div>
+
+  <!-- Paginação -->
+  <nav class="mt-4">
+    <ul id="paginacao" class="pagination justify-content-center"></ul>
+  </nav>
+</section>
+
+<!-- Sobre -->
+<section id="sobre" class="container">
+  <h2 class="mb-3">Sobre o Painel</h2>
+  <p class="text-muted">
+    Este painel foi construído inteiramente com componentes do Bootstrap 5, simulando um
+    sistema de gerenciamento de cursos com cadastro, filtros, paginação e notificações.
+  </p>
+</section>
+
+<!-- Contato -->
+<section id="contato" class="container">
+  <h2 class="mb-3">Contato</h2>
+  <p class="text-muted">Dúvidas sobre o painel? Entre em contato com a equipe responsável.</p>
+</section>
+
+<!-- Modal: Adicionar Curso -->
+<div class="modal fade" id="modalCurso" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="formCurso" class="needs-validation" novalidate>
+        <div class="modal-header">
+          <h5 class="modal-title">Adicionar Curso</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="inputNome" placeholder="Nome do curso" required>
+            <label for="inputNome">Nome do curso</label>
+            <div class="invalid-feedback">Informe o nome do curso.</div>
+          </div>
+
+          <div class="form-floating mb-3">
+            <select class="form-select" id="inputCategoria" required>
+              <option value="">Selecione...</option>
+              <option value="Tecnologia">Tecnologia</option>
+              <option value="Design">Design</option>
+              <option value="Negócios">Negócios</option>
+              <option value="Idiomas">Idiomas</option>
+            </select>
+            <label for="inputCategoria">Categoria</label>
+            <div class="invalid-feedback">Selecione uma categoria.</div>
+          </div>
+
+          <div class="input-group mb-3">
+            <span class="input-group-text">R$</span>
+            <input type="number" class="form-control" id="inputPreco" min="0" step="0.01" placeholder="Preço" required>
+            <div class="invalid-feedback">Informe um preço válido.</div>
+          </div>
+
+          <label for="inputCarga" class="form-label">
+            Carga horária: <span class="range-valor" id="valorCarga">40</span>h
+          </label>
+          <input type="range" class="form-range mb-3" id="inputCarga" min="5" max="120" step="5" value="40">
+
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="inputDestaque">
+            <label class="form-check-label" for="inputDestaque">Curso em destaque</label>
+          </div>
+
+          <div class="form-floating">
+            <textarea class="form-control" id="inputDescricao" style="height: 90px;" placeholder="Descrição" required></textarea>
+            <label for="inputDescricao">Descrição do curso</label>
+            <div class="invalid-feedback">Adicione uma breve descrição.</div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar Curso</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Toasts -->
+<div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // ---------- Dados simulados ----------
+  let cursos = [
+    { id: 1, nome: "JavaScript do Zero", categoria: "Tecnologia", preco: 199, carga: 40, destaque: true, descricao: "Aprenda JavaScript desde a lógica de programação até projetos práticos com DOM e eventos." },
+    { id: 2, nome: "Fundamentos de UX/UI", categoria: "Design", preco: 149, carga: 30, destaque: false, descricao: "Introdução aos princípios de usabilidade, wireframes e prototipação de interfaces." },
+    { id: 3, nome: "Gestão de Projetos Ágeis", categoria: "Negócios", preco: 179, carga: 25, destaque: false, descricao: "Fundamentos de Scrum e Kanban aplicados a times de tecnologia." },
+    { id: 4, nome: "Inglês para Desenvolvedores", categoria: "Idiomas", preco: 99, carga: 20, destaque: false, descricao: "Vocabulário técnico e leitura de documentações em inglês." },
+    { id: 5, nome: "Python para Análise de Dados", categoria: "Tecnologia", preco: 249, carga: 50, destaque: true, descricao: "Manipulação de dados com Pandas e visualizações com Matplotlib." }
+  ];
+
+  let proximoId = 6;
+  let categoriaFiltro = "Todas";
+  let paginaAtual = 1;
+  const metaCursos = 10;
+  const porPagina = 3;
+
+  // ---------- Elementos ----------
+  const listaCursos = document.getElementById("listaCursos");
+  const spinner = document.getElementById("spinnerCarregando");
+  const areaAlerta = document.getElementById("areaAlerta");
+  const paginacaoEl = document.getElementById("paginacao");
+  const barraProgresso = document.getElementById("barraProgresso");
+  const progressoTexto = document.getElementById("progressoTexto");
+  const listaCategorias = document.getElementById("listaCategorias");
+  const categoriaAtualLabel = document.getElementById("categoriaAtualLabel");
+
+  // ---------- Categorias no dropdown ----------
+  function montarCategorias() {
+    const categorias = ["Todas", ...new Set(cursos.map(c => c.categoria))];
+    listaCategorias.innerHTML = categorias.map(cat =>
+      `<li><a class="dropdown-item" href="#" data-categoria="${cat}">${cat}</a></li>`
+    ).join("");
+
+    listaCategorias.querySelectorAll(".dropdown-item").forEach(item => {
+      item.addEventListener("click", (e) => {
+        e.preventDefault();
+        categoriaFiltro = item.dataset.categoria;
+        categoriaAtualLabel.textContent = categoriaFiltro;
+        paginaAtual = 1;
+        renderCursos();
+      });
+    });
+  }
+
+  // ---------- Alerta ----------
+  function mostrarAlerta(mensagem, tipo) {
+    const id = "alerta-" + Date.now();
+    areaAlerta.innerHTML = `
+      <div id="${id}" class="alert alert-${tipo} alert-dismissible fade show" role="alert">
+        ${mensagem}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>`;
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) bootstrap.Alert.getOrCreateInstance(el).close();
+    }, 4000);
+  }
+
+  // ---------- Toast ----------
+  function mostrarToast(mensagem, tipo) {
+    const container = document.getElementById("toastContainer");
+    const toastEl = document.createElement("div");
+    toastEl.className = `toast align-items-center text-bg-${tipo} border-0`;
+    toastEl.setAttribute("role", "alert");
+    toastEl.innerHTML = `
+      <div class="d-flex">
+        <div class="toast-body">${mensagem}</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>`;
+    container.appendChild(toastEl);
+    const toast = new bootstrap.Toast(toastEl, { delay: 3500 });
+    toast.show();
+    toastEl.addEventListener("hidden.bs.toast", () => toastEl.remove());
+  }
+
+  // ---------- Progress bar ----------
+  function atualizarProgresso() {
+    const pct = Math.min(100, Math.round((cursos.length / metaCursos) * 100));
+    barraProgresso.style.width = pct + "%";
+    progressoTexto.textContent = `${cursos.length} / ${metaCursos} cursos (${pct}%)`;
+  }
+
+  // ---------- Render dos cards + paginação ----------
+  function renderCursos() {
+    const filtrados = categoriaFiltro === "Todas"
+      ? cursos
+      : cursos.filter(c => c.categoria === categoriaFiltro);
+
+    const totalPaginas = Math.max(1, Math.ceil(filtrados.length / porPagina));
+    if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
+
+    const inicio = (paginaAtual - 1) * porPagina;
+    const pagina = filtrados.slice(inicio, inicio + porPagina);
+
+    if (pagina.length === 0) {
+      listaCursos.innerHTML = `<div class="col-12"><p class="text-muted">Nenhum curso encontrado nessa categoria.</p></div>`;
+    } else {
+      listaCursos.innerHTML = pagina.map(curso => `
+        <div class="col-md-4">
+          <div class="card card-curso p-3 position-relative">
+            ${curso.destaque ? '<span class="badge bg-warning text-dark badge-destaque">Destaque</span>' : ''}
+            <h5>${curso.nome}
+              <i class="bi bi-info-circle text-primary" style="cursor:pointer"
+                 data-bs-toggle="popover" data-bs-trigger="hover focus"
+                 data-bs-content="Categoria: ${curso.categoria} • ${curso.carga}h"></i>
+            </h5>
+            <p class="text-muted mb-1">${curso.categoria} — ${curso.carga}h</p>
+            <p class="fw-bold mb-3">R$ ${curso.preco.toFixed(2)}</p>
+
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#det-${curso.id}">
+                Detalhes
+              </button>
+              <button class="btn btn-sm btn-outline-danger" onclick="excluirCurso(${curso.id})">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+
+            <div class="collapse mt-3" id="det-${curso.id}">
+              <p class="small text-muted mb-0">${curso.descricao}</p>
+            </div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    // Inicializa popovers dos cards recém-criados
+    listaCursos.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
+      new bootstrap.Popover(el);
+    });
+
+    // Paginação
+    paginacaoEl.innerHTML = "";
+    for (let i = 1; i <= totalPaginas; i++) {
+      paginacaoEl.innerHTML += `
+        <li class="page-item ${i === paginaAtual ? "active" : ""}">
+          <a class="page-link" href="#" data-pagina="${i}">${i}</a>
+        </li>`;
+    }
+    paginacaoEl.querySelectorAll(".page-link").forEach(link => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        paginaAtual = parseInt(link.dataset.pagina);
+        renderCursos();
+      });
+    });
+
+    atualizarProgresso();
+  }
+
+  // ---------- Excluir curso ----------
+  function excluirCurso(id) {
+    cursos = cursos.filter(c => c.id !== id);
+    montarCategorias();
+    renderCursos();
+    mostrarToast("Curso removido.", "danger");
+    mostrarAlerta("Curso excluído com sucesso.", "warning");
+  }
+
+  // ---------- Range da carga horária ----------
+  const inputCarga = document.getElementById("inputCarga");
+  const valorCarga = document.getElementById("valorCarga");
+  inputCarga.addEventListener("input", () => {
+    valorCarga.textContent = inputCarga.value;
+  });
+
+  // ---------- Envio do formulário (com validação) ----------
+  const formCurso = document.getElementById("formCurso");
+  formCurso.addEventListener("submit", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!formCurso.checkValidity()) {
+      formCurso.classList.add("was-validated");
+      mostrarAlerta("Preencha todos os campos obrigatórios antes de salvar.", "danger");
+      return;
+    }
+
+    const novoCurso = {
+      id: proximoId++,
+      nome: document.getElementById("inputNome").value.trim(),
+      categoria: document.getElementById("inputCategoria").value,
+      preco: parseFloat(document.getElementById("inputPreco").value),
+      carga: parseInt(inputCarga.value),
+      destaque: document.getElementById("inputDestaque").checked,
+      descricao: document.getElementById("inputDescricao").value.trim()
+    };
+
+    cursos.push(novoCurso);
+    montarCategorias();
+    paginaAtual = Math.ceil(cursos.length / porPagina);
+    renderCursos();
+
+    mostrarToast("Curso salvo com sucesso!", "success");
+    mostrarAlerta("Novo curso adicionado à lista.", "success");
+
+    formCurso.reset();
+    formCurso.classList.remove("was-validated");
+    valorCarga.textContent = "40";
+    bootstrap.Modal.getInstance(document.getElementById("modalCurso")).hide();
+  });
+
+  // ---------- Simulação de carregamento inicial ----------
+  montarCategorias();
+  setTimeout(() => {
+    spinner.classList.add("d-none");
+    listaCursos.classList.remove("d-none");
+    renderCursos();
+  }, 1200);
+</script>
+
+</body>
+</html>
