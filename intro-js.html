@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introdução ao JavaScript</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+  }
+  .card {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    text-align: center;
+    width: 340px;
+  }
+  button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+  }
+  button:hover {
+    background: #1d4ed8;
+  }
+  #resultados {
+    margin-top: 20px;
+    text-align: left;
+    font-size: 15px;
+  }
+  #resultados p {
+    margin: 4px 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Introdução ao JavaScript</h2>
+  <button onclick="boasVindas()">Boas-vindas</button>
+  <button onclick="calcular()">Calcular</button>
+  <div id="resultados"></div>
+</div>
+
+<script>
+  // Botão de boas-vindas usando alert
+  function boasVindas() {
+    alert("Bem-vindo(a) ao site!");
+  }
+
+  // Pede dois números, calcula as 4 operações e mostra o resultado
+  function calcular() {
+    // Variáveis recebendo os valores digitados pelo usuário via prompt
+    let numero1 = parseFloat(prompt("Digite o primeiro número:"));
+    let numero2 = parseFloat(prompt("Digite o segundo número:"));
+
+    // Operadores aritméticos
+    let soma = numero1 + numero2;
+    let subtracao = numero1 - numero2;
+    let multiplicacao = numero1 * numero2;
+    let divisao = numero1 / numero2;
+
+    // Exibindo os resultados no console
+    console.log("Soma: " + soma);
+    console.log("Subtração: " + subtracao);
+    console.log("Multiplicação: " + multiplicacao);
+    console.log("Divisão: " + divisao);
+
+    // Exibindo os resultados na página com document.write
+    document.write("<h3>Resultados</h3>");
+    document.write("<p>Soma: " + soma + "</p>");
+    document.write("<p>Subtração: " + subtracao + "</p>");
+    document.write("<p>Multiplicação: " + multiplicacao + "</p>");
+    document.write("<p>Divisão: " + divisao.toFixed(2) + "</p>");
+  }
+</script>
+
+</body>
+</html>
