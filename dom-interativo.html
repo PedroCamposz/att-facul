@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Página Interativa com DOM</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* Modo claro (padrão) */
+  body.claro {
+    background: #f2f2f2;
+    color: #222;
+  }
+
+  /* Modo escuro */
+  body.escuro {
+    background: #1a1a1a;
+    color: #f2f2f2;
+  }
+
+  .card {
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    text-align: center;
+    width: 340px;
+    transition: background 0.3s;
+  }
+  body.claro .card {
+    background: #fff;
+  }
+  body.escuro .card {
+    background: #2b2b2b;
+  }
+
+  input {
+    width: 100%;
+    padding: 8px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 15px;
+  }
+
+  button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+    color: #fff;
+  }
+  #btnEnviar {
+    background: #2563eb;
+  }
+  #btnEnviar:hover {
+    background: #1d4ed8;
+  }
+  #btnModo {
+    background: #444;
+  }
+  #btnModo:hover {
+    background: #222;
+  }
+
+  #mensagem {
+    margin-top: 15px;
+    font-weight: bold;
+    min-height: 20px;
+  }
+</style>
+</head>
+<body class="claro">
+
+<div class="card">
+  <h2>Identifique-se</h2>
+
+  <input type="text" id="nomeUsuario" placeholder="Digite seu nome">
+  <button id="btnEnviar">Enviar</button>
+  <p id="mensagem"></p>
+
+  <hr>
+
+  <button id="btnModo">Alternar Modo Claro/Escuro</button>
+</div>
+
+<script>
+  // Referências aos elementos do DOM
+  const body = document.body;
+  const campoNome = document.getElementById("nomeUsuario");
+  const mensagem = document.getElementById("mensagem");
+  const btnEnviar = document.getElementById("btnEnviar");
+  const btnModo = document.getElementById("btnModo");
+
+  // Evento de clique: exibir mensagem personalizada com o nome digitado
+  btnEnviar.addEventListener("click", function () {
+    const nome = campoNome.value.trim();
+
+    if (nome === "") {
+      mensagem.textContent = "Por favor, digite seu nome.";
+    } else {
+      mensagem.textContent = "Olá, " + nome + "! Seja bem-vindo(a).";
+    }
+  });
+
+  // Evento de clique: alternar entre modo claro e escuro
+  btnModo.addEventListener("click", function () {
+    if (body.classList.contains("claro")) {
+      body.classList.remove("claro");
+      body.classList.add("escuro");
+    } else {
+      body.classList.remove("escuro");
+      body.classList.add("claro");
+    }
+  });
+</script>
+
+</body>
+</html>
