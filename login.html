@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Login</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  .card {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    text-align: center;
+    width: 300px;
+  }
+  input {
+    width: 100%;
+    padding: 8px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+  }
+  button:hover {
+    background: #1d4ed8;
+  }
+  #resultado {
+    margin-top: 15px;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Login</h2>
+  <input type="text" id="usuario" placeholder="Nome de usuário">
+  <input type="password" id="senha" placeholder="Senha">
+  <button onclick="verificarLogin()">Entrar</button>
+  <p id="resultado"></p>
+</div>
+
+<script>
+function verificarLogin() {
+  const usuarioDigitado = document.getElementById("usuario").value;
+  const senhaDigitada = document.getElementById("senha").value;
+  const resultado = document.getElementById("resultado");
+
+  const usuarioCorreto = "admin";
+  const senhaCorreta = "1234";
+
+  if (usuarioDigitado === usuarioCorreto && senhaDigitada === senhaCorreta) {
+    resultado.style.color = "green";
+    resultado.textContent = "Login bem-sucedido!";
+  } else if (usuarioDigitado === usuarioCorreto && senhaDigitada !== senhaCorreta) {
+    resultado.style.color = "orange";
+    resultado.textContent = "Senha incorreta!";
+  } else {
+    resultado.style.color = "red";
+    resultado.textContent = "Usuário não encontrado!";
+  }
+}
+</script>
+
+</body>
+</html>
